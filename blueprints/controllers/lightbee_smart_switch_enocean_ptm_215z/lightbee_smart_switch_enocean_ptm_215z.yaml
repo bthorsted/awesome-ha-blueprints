@@ -1,0 +1,609 @@
+blueprint:
+  name: Z2M - EnOcean PTM215Z (Friends of Hue) switch, Dimming, v2
+  description: |
+    This blueprint is focusing on easy setting scenes and easy dimming of lights
+
+    The button on the left will dim+/dim- on one light (or a Z2M light group) when hold
+
+    Works with Zigbee2MQTT 2.0 and up
+  domain: automation
+  input:
+    integration:
+      name: (Required) Integration
+      description: Integration used for connecting the remote with Home Assistant. Select one of the available values.
+      selector:
+        select:
+          options:
+            - Zigbee2MQTT
+    controller_device:
+      name: HA device name, action entity
+      description: The entity from HA
+      selector:
+        entity:
+          filter: 
+            - integration: mqtt
+              manufacturer: EnOcean
+              model: Pushbutton transmitter module
+          multiple: false 
+    helper_last_controller_event:
+      name: (Required) Helper - Last Controller Event
+      description: Input Text used to store the last event fired by the controller. You will need to manually create a text input entity for this, please read the blueprint Additional Notes for more info.
+      default: ''
+      selector:
+        entity:
+          domain: input_text
+    hold_delay:
+      name: Hold delay
+      description: If the button has been held more than the configured Hold delay,
+        the corresponding repeat action will be triggered
+      default: 1000
+      selector:
+        number:
+          min: 300
+          max: 3000
+          unit_of_measurement: milliseconds
+          step: 100
+    action_button_1_short:
+      name: Button 1 short (upper left)
+      description: Action to run, when button 1 is released after short pres.
+      default: []
+      selector:
+        action: {}
+    action_button_1_long:
+      name: Button 1 long (upper left)
+      description: Action to run, when button 1 is released after long pres or, if looping is enabled, action to run while button 1 is held
+      default: []
+      selector:
+        action: {}
+    action_button_2_short:
+      name: Button 2 short (lower left)
+      description: Action to run, when button 2 is released after short press.
+      default: []
+      selector:
+        action: {}
+    action_button_2_long:
+      name: Button 2 long (lower left)
+      description: Action to run, when button 2 is released after long pres or, if looping is enabled, action to run while button 2 is held
+      default: []
+      selector:
+        action: {}
+    action_button_3_short:
+      name: Button 3 short (upper right)
+      description: Action to run, when button 3 is released after short press.
+      default: []
+      selector:
+        action: {}
+    action_button_3_long:
+      name: Button 3 long (upper right)
+      description: Action to run, when button 3 is released after long pres or, if looping is enabled, action to run while button 3 is held
+      default: []
+      selector:
+        action: {}
+
+    action_button_4_short:
+      name: Button 4 short release (lower right)
+      description: Action to run, when the button 4 is released after short press.
+      default: []
+      selector:
+        action: {}
+    action_button_4_long:
+      name: Button 4 long (lower right)
+      description: Action to run, when button 4 is released after long pres or, if looping is enabled, action to run while button 4 is held
+      default: []
+      selector:
+        action: {}
+
+    action_button_13_short:
+      name: Button 1 and 3 short release (both upper)
+      description: Action to run, when the button 1 and 3 is released after short press.
+      default: []
+      selector:
+        action: {}
+    action_button_13_long:
+      name: Button 1 and 3 long release (both upper)
+      description: Action to run, when the button 1 and 3 is released after long press.
+      default: []
+      selector:
+        action: {}
+
+    action_button_24_short:
+      name: Button 2 and 4 short release (both lower)
+      description: Action to run, when the button 1 and 3 is released after short press.
+      default: []
+      selector:
+        action: {}
+    action_button_24_long:
+      name: Button 2 and 4 long release (both lower)
+      description: Action to run, when the button 1 and 3 is released after long press.
+      default: []
+      selector:
+        action: {}
+    # inputs for looping custom actions on long button press events until the corresponding release event is received
+    button_1_long_loop:
+      name: (Optional) Button 1 long press - loop until release
+      description: Loop the button 1 action until the button is released.
+      default: false
+      selector:
+        boolean:
+    button_1_long_max_loop_repeats:
+      name: (Optional) Button 1 long press - Maximum loop repeats
+      description: >-
+        Maximum number of repeats for the custom action, when looping is enabled.
+        Use it as a safety limit to prevent an endless loop in case the corresponding stop event is not received.
+      default: 500
+      selector:
+        number:
+          min: 1
+          max: 5000
+          mode: slider
+          step: 1
+    button_2_long_loop:
+      name: (Optional) Button 2 long press - loop until release
+      description: Loop the button 2 action until the button is released.
+      default: false
+      selector:
+        boolean:
+    button_2_long_max_loop_repeats:
+      name: (Optional) Button 2 long press - Maximum loop repeats
+      description: >-
+        Maximum number of repeats for the custom action, when looping is enabled.
+        Use it as a safety limit to prevent an endless loop in case the corresponding stop event is not received.
+      default: 500
+      selector:
+        number:
+          min: 1
+          max: 5000
+          mode: slider
+          step: 1
+    button_3_long_loop:
+      name: (Optional) Button 3 long press - loop until release
+      description: Loop the button 3 action until the button is released.
+      default: false
+      selector:
+        boolean:
+    button_3_long_max_loop_repeats:
+      name: (Optional) Button 3 long press - Maximum loop repeats
+      description: >-
+        Maximum number of repeats for the custom action, when looping is enabled.
+        Use it as a safety limit to prevent an endless loop in case the corresponding stop event is not received.
+      default: 500
+      selector:
+        number:
+          min: 1
+          max: 5000
+          mode: slider
+          step: 1
+    button_4_long_loop:
+      name: (Optional) Button 4 long press - loop until release
+      description: Loop the button 4 action until the button is released.
+      default: false
+      selector:
+        boolean:
+    button_4_long_max_loop_repeats:
+      name: (Optional) Button 4 long press - Maximum loop repeats
+      description: >-
+        Maximum number of repeats for the custom action, when looping is enabled.
+        Use it as a safety limit to prevent an endless loop in case the corresponding stop event is not received.
+      default: 500
+      selector:
+        number:
+          min: 1
+          max: 5000
+          mode: slider
+          step: 1
+    # helpers used to properly recognize the remote button events
+    helper_debounce_delay:
+      name: (Optional) Helper - Debounce delay
+      description:
+        Delay used for debouncing RAW controller events, by default set to 0. A value of 0 disables the debouncing feature. Increase this value if you notice custom actions or linked Hooks running multiple times when interacting with the device. When the controller needs to be debounced,
+        usually a value of 100 is enough to remove all duplicate events.
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 1000
+          unit_of_measurement: milliseconds
+          mode: box
+          step: 10
+
+mode: restart
+max_exceeded: silent
+
+variables:
+  # integration id used to select items in the action mapping
+  # integration type is set from trigger.id
+  integration_id: '{{ trigger.id.split("-")[0] }}'
+  # convert input tags to variables, to be used in templates
+  hold_delay: !input hold_delay
+  button_1_long_loop: !input button_1_long_loop
+  button_1_long_max_loop_repeats: !input button_1_long_max_loop_repeats
+  button_2_long_loop: !input button_2_long_loop
+  button_2_long_max_loop_repeats: !input button_2_long_max_loop_repeats
+  button_3_long_loop: !input button_3_long_loop
+  button_3_long_max_loop_repeats: !input button_3_long_max_loop_repeats
+  button_4_long_loop: !input button_4_long_loop
+  button_4_long_max_loop_repeats: !input button_4_long_max_loop_repeats
+  helper_debounce_delay: !input helper_debounce_delay
+  # mapping between actions and integrations
+  actions_mapping:
+    z2m:
+      # source: https://www.zigbee2mqtt.io/devices/QUAD-ZIG-SW.html
+      button_1_short: [press_1]
+      button_1_long: [button_1_hold]
+      button_1_release: [release_1]
+      button_1_double: [button_1_double]
+      button_1_triple: [press_1_and_3]
+      button_2_short: [press_2]
+      button_2_long: [button_2_hold]
+      button_2_release: [release_2]
+      button_2_double: [button_2_double]
+      button_2_triple: [press_2_and_4]
+      button_3_short: [press_3]
+      button_3_long: [button_3_hold]
+      button_3_release: [release_3]
+      button_3_double: [button_3_double]
+      button_3_triple: [button_3_triple]
+      button_4_short: [press_4]
+      button_4_long: [button_4_hold]
+      button_4_release: [release_4]
+      button_4_double: [button_4_double]
+      button_4_triple: [button_4_triple]
+  # pre-choose actions for buttons based on configured integration
+  # no need to perform this task at automation runtime
+  button_1_short: '{{ actions_mapping[integration_id]["button_1_short"] }}'
+  button_1_long: '{{ actions_mapping[integration_id]["button_1_long"] }}'
+  button_1_release: '{{ actions_mapping[integration_id]["button_1_release"] }}'
+  button_1_double: '{{ actions_mapping[integration_id]["button_1_double"] }}'
+  button_1_triple: '{{ actions_mapping[integration_id]["button_1_triple"] }}'
+  button_2_short: '{{ actions_mapping[integration_id]["button_2_short"] }}'
+  button_2_long: '{{ actions_mapping[integration_id]["button_2_long"] }}'
+  button_2_release: '{{ actions_mapping[integration_id]["button_2_release"] }}'
+  button_2_double: '{{ actions_mapping[integration_id]["button_2_double"] }}'
+  button_2_triple: '{{ actions_mapping[integration_id]["button_2_triple"] }}'
+  button_3_short: '{{ actions_mapping[integration_id]["button_3_short"] }}'
+  button_3_long: '{{ actions_mapping[integration_id]["button_3_long"] }}'
+  button_3_release: '{{ actions_mapping[integration_id]["button_3_release"] }}'
+  button_3_double: '{{ actions_mapping[integration_id]["button_3_double"] }}'
+  button_3_triple: '{{ actions_mapping[integration_id]["button_3_triple"] }}'
+  button_4_short: '{{ actions_mapping[integration_id]["button_4_short"] }}'
+  button_4_long: '{{ actions_mapping[integration_id]["button_4_long"] }}'
+  button_4_release: '{{ actions_mapping[integration_id]["button_4_release"] }}'
+  button_4_double: '{{ actions_mapping[integration_id]["button_4_double"] }}'
+  button_4_triple: '{{ actions_mapping[integration_id]["button_4_triple"] }}'
+  # integrations which need to store the previous press event to determine which button was released
+  integrations_with_prev_event_storage: [zigbee2mqtt]
+  # build data to send within a controller event
+  controller_id: !input controller_device
+  timediff: >-
+    {{ (trigger.to_state.last_changed -
+    trigger.from_state.last_changed).total_seconds() }}
+triggers:
+  # triggers for zigbee2mqtt mqtt device action
+  - trigger: device
+    id: z2m-button-1-single
+    domain: mqtt
+    device_id: !input controller_device
+    type: action
+    subtype: press_1
+  - trigger: device
+    id: z2m-button-1-release
+    domain: mqtt
+    device_id: !input controller_device
+    type: action
+    subtype: release_1
+  - trigger: device
+    id: z2m-button-1-and-3
+    domain: mqtt
+    device_id: !input controller_device
+    type: action
+    subtype: press_1_and_3
+  - trigger: device
+    id: z2m-button-1-and-3-release
+    domain: mqtt
+    device_id: !input controller_device
+    type: action
+    subtype: release_1_and_3
+  - trigger: device
+    id: z2m-button-2-single
+    domain: mqtt
+    device_id: !input controller_device
+    type: action
+    subtype: press_2
+  - trigger: device
+    id: z2m-button-2-release
+    domain: mqtt
+    device_id: !input controller_device
+    type: action
+    subtype: release_2
+  - trigger: device
+    id: z2m-button-2-and-4
+    domain: mqtt
+    device_id: !input controller_device
+    type: action
+    subtype: press_2_and_4
+  - trigger: device
+    id: z2m-button-2-and-4-release
+    domain: mqtt
+    device_id: !input controller_device
+    type: action
+    subtype: release_2_and_4
+  - trigger: device
+    id: z2m-button-3-single
+    domain: mqtt
+    device_id: !input controller_device
+    type: action
+    subtype: press_3
+  - trigger: device
+    id: z2m-button-3-release
+    domain: mqtt
+    device_id: !input controller_device
+    type: action
+    subtype: release_3
+  - trigger: device
+    id: z2m-button-4-single
+    domain: mqtt
+    device_id: !input controller_device
+    type: action
+    subtype: press_4
+  - trigger: device
+    id: z2m-button-4-release
+    domain: mqtt
+    device_id: !input controller_device
+    type: action
+    subtype: release_4
+conditions:
+  - condition: and
+    conditions:
+      # check that the button event is not empty
+      - >-
+        {%- set trigger_action -%}
+        {%- if integration_id == "z2m" -%}
+        {{ trigger.payload }}
+        {%- endif -%}
+        {%- endset -%}
+        {{ trigger_action not in ["","None"] }}
+action:
+  # debouncing - when automation is triggered multiple times, the last automation run is the one which completes execution, due to mode restart
+  # therefore previous runs must wait for the debounce delay before executing any other action
+  # if the delay expires and the automation is still running it means it's the last run and execution can continue
+  - delay:
+      milliseconds: !input helper_debounce_delay
+  # extract button event from the trigger
+  # provide a single string value to check against
+  - variables:
+      trigger_action: >-
+        {%- if integration_id == "z2m" -%}
+        {{ trigger.payload }}
+        {%- endif -%}
+      deserialized_state: '{{ (states(helper_last_controller_event) | from_json) if helper_last_controller_event is not none and (states(helper_last_controller_event) | regex_match("^\{\s*?((\"a\":\s*?\".*\"|\"t\":\s*?\d+\.\d+)(,\s*?)?){2}\s*?\}$")) else {} }}'
+      trigger_delta: '{{ (as_timestamp(now()) - (deserialized_state.t | default(0))) * 1000 }}'
+      last_controller_event: '{{ (deserialized_state.a | default("")) }}'
+  # update helper
+  - action: input_text.set_value
+    data:
+      entity_id: !input helper_last_controller_event
+      value: '{{ {"a":trigger_action,"t":as_timestamp(now())} | to_json }}'
+  # choose the sequence to run based on the received button event
+  - choose:
+    - conditions: '{{ trigger_action | string in button_1_short }}'
+      sequence: 
+      - delay:
+          milliseconds: '{{ hold_delay }}'
+      # fire the event
+      - event: ahb_controller_event
+        event_data:
+          controller: '{{ controller_id }}'
+          action: button_1_long
+      # run the custom action
+      - choose:
+          # if looping is enabled, loop the action for a finite number of iterations
+          - conditions: '{{ button_1_long_loop }}'
+            sequence:
+              - repeat:
+                  while: '{{ repeat.index < button_1_max_loop_repeats | int }}'
+                  sequence: !input action_button_1_long
+        # if looping is not enabled run the custom action only once
+        default: !input action_button_1_long
+
+    - conditions: '{{ trigger_action | string in button_2_short }}'
+      sequence: 
+      - delay:
+          milliseconds: '{{ hold_delay }}'
+      # fire the event
+      - event: ahb_controller_event
+        event_data:
+          controller: '{{ controller_id }}'
+          action: button_2_long
+      # run the custom action
+      - choose:
+          # if looping is enabled, loop the action for a finite number of iterations
+          - conditions: '{{ button_2_long_loop }}'
+            sequence:
+              - repeat:
+                  while: '{{ repeat.index < button_2_max_loop_repeats | int }}'
+                  sequence: !input action_button_2_long
+        # if looping is not enabled run the custom action only once
+        default: !input action_button_2_long
+
+    - conditions: '{{ trigger_action | string in button_3_short }}'
+      sequence: 
+      - delay:
+          milliseconds: '{{ hold_delay }}'
+      # fire the event
+      - event: ahb_controller_event
+        event_data:
+          controller: '{{ controller_id }}'
+          action: button_3_long
+      # run the custom action
+      - choose:
+          # if looping is enabled, loop the action for a finite number of iterations
+          - conditions: '{{ button_3_long_loop }}'
+            sequence:
+              - repeat:
+                  while: '{{ repeat.index < button_3_max_loop_repeats | int }}'
+                  sequence: !input action_button_3_long
+        # if looping is not enabled run the custom action only once
+        default: !input action_button_3_long
+
+    - conditions: '{{ trigger_action | string in button_4_short }}'
+      sequence: 
+      - delay:
+          milliseconds: '{{ hold_delay }}'
+      # fire the event
+      - event: ahb_controller_event
+        event_data:
+          controller: '{{ controller_id }}'
+          action: button_4_long
+      # run the custom action
+      - choose:
+          # if looping is enabled, loop the action for a finite number of iterations
+          - conditions: '{{ button_4_long_loop }}'
+            sequence:
+              - repeat:
+                  while: '{{ repeat.index < button_4_max_loop_repeats | int }}'
+                  sequence: !input action_button_4_long
+        # if looping is not enabled run the custom action only once
+        default: !input action_button_4_long
+
+    - conditions: '{{ trigger_action | string in button_1_and_3_short }}'
+      sequence: 
+      - delay:
+          milliseconds: '{{ hold_delay }}'
+      # fire the event
+      - event: ahb_controller_event
+        event_data:
+          controller: '{{ controller_id }}'
+          action: button_1_triple
+      # run the custom action
+      - choose:
+          - conditions: []
+            sequence: !input action_button_13_long
+
+    - conditions: '{{ trigger_action | string in button_2_and_4_short }}'
+      sequence: 
+      - delay:
+          milliseconds: '{{ hold_delay }}'
+      # fire the event
+      - event: ahb_controller_event
+        event_data:
+          controller: '{{ controller_id }}'
+          action: button_2_triple
+      # run the custom action
+      - choose:
+          - conditions: []
+            sequence: !input action_button_24_long
+
+    - conditions: '{{ trigger_action | string in button_1_release }}'
+      sequence:
+      - choose:
+        - conditions: '{{ timediff > (hold_delay/1000) }}'
+          sequence:
+            - event: ahb_controller_event
+              event_data:
+                controller: '{{ controller_id }}'
+                action: button_1_release
+        default:
+          sequence:
+          - event: ahb_controller_event
+            event_data:
+              controller: '{{ controller_id }}'
+              action: button_1_short
+          - choose:
+            - conditions: '{{ true }}'
+              sequence: !input action_button_1_short
+
+    - conditions: '{{ trigger_action | string in button_2_release }}'
+      sequence:
+      - choose:
+        - conditions: '{{ timediff > (hold_delay/1000) }}'
+          sequence:
+            - event: ahb_controller_event
+              event_data:
+                controller: '{{ controller_id }}'
+                action: button_2_release
+        default:
+          sequence:
+          - event: ahb_controller_event
+            event_data:
+              controller: '{{ controller_id }}'
+              action: button_2_short
+          - choose:
+            - conditions: '{{ true }}'
+              sequence: !input action_button_2_short
+
+    - conditions: '{{ trigger_action | string in button_3_release }}'
+      sequence:
+      - choose:
+        - conditions: '{{ timediff > (hold_delay/1000) }}'
+          sequence:
+            - event: ahb_controller_event
+              event_data:
+                controller: '{{ controller_id }}'
+                action: button_3_release
+        default:
+          sequence:
+          - event: ahb_controller_event
+            event_data:
+              controller: '{{ controller_id }}'
+              action: button_3_short
+          - choose:
+            - conditions: '{{ true }}'
+              sequence: !input action_button_3_short
+
+    - conditions: '{{ trigger_action | string in button_4_release }}'
+      sequence:
+      - choose:
+        - conditions: '{{ timediff > (hold_delay/1000) }}'
+          sequence:
+            - event: ahb_controller_event
+              event_data:
+                controller: '{{ controller_id }}'
+                action: button_4_release
+        default:
+          sequence:
+          - event: ahb_controller_event
+            event_data:
+              controller: '{{ controller_id }}'
+              action: button_4_short
+          - choose:
+            - conditions: '{{ true }}'
+              sequence: !input action_button_4_short
+
+
+    - conditions: '{{ trigger_action | string in ''release_1_and_3'' }}'
+      sequence:
+      - choose:
+        - conditions: '{{ timediff > (hold_delay/1000) }}'
+          sequence:
+            - event: ahb_controller_event
+              event_data:
+                controller: '{{ controller_id }}'
+                action: button_13_release
+        default:
+          sequence:
+          - event: ahb_controller_event
+            event_data:
+              controller: '{{ controller_id }}'
+              action: button_1_triple
+          - choose:
+            - conditions: '{{ true }}'
+              sequence: !input action_button_13_short
+
+    - conditions: '{{ trigger_action | string in ''release_2_and_4'' }}'
+      sequence:
+      - choose:
+        - conditions: '{{ timediff > (hold_delay/1000) }}'
+          sequence:
+            - event: ahb_controller_event
+              event_data:
+                controller: '{{ controller_id }}'
+                action: button_24_release
+        default:
+          sequence:
+          - event: ahb_controller_event
+            event_data:
+              controller: '{{ controller_id }}'
+              action: button_2_triple
+          - choose:
+            - conditions: '{{ true }}'
+              sequence: !input action_button_24_short
