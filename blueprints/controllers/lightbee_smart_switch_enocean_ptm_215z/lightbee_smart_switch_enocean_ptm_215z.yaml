@@ -276,15 +276,18 @@ variables:
     {{ trigger.payload_json.elapsed | int }}
 trigger_variables:
   controller_id: !input controller_device
-  controller_topic: "{{ 'zigbee2mqtt/' ~ device_name(controller_id) }}"
 triggers:
   # triggers for zigbee2mqtt mqtt device action
   - trigger: mqtt
     id: z2m.action
-    topic: "{{ controller_topic }}"
+    topic: "zigbee2mqtt/outlet_buttons/+"
 conditions:
   - condition: and
     conditions:
+      - >-
+        {%- set device_friendly_name = device_name(controller_id) -%}
+        {%- endset -%}
+        {{ trigger.topic == 'zigbee2mqtt/outlet_buttons/' ~ device_friendly_name }}
       # check that the button event is not empty
       - >-
         {%- set trigger_action -%}
