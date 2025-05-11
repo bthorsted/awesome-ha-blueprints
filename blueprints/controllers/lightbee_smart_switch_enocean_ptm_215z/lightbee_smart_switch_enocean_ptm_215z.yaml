@@ -272,10 +272,10 @@ variables:
   # integrations which need to store the previous press event to determine which button was released
   integrations_with_prev_event_storage: [zigbee2mqtt]
   # build data to send within a controller event
-  controller_id: !input controller_device
   timediff: >-
     {{ trigger.payload_json.elapsed | int }}
 trigger_variables:
+  controller_id: !input controller_device
   controller_topic: "{{ 'zigbee2mqtt/' ~ device_name(controller_id) }}"
 triggers:
   # triggers for zigbee2mqtt mqtt device action
