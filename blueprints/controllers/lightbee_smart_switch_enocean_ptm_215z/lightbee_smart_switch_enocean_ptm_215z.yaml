@@ -282,10 +282,10 @@ triggers:
     id: z2m.action
     topic: "zigbee2mqtt/outlet_buttons/+"
 conditions:
-  - condition: and
-    conditions:
+  - and:
       - >-
-        {%- set device_friendly_name = device_name(controller_id) -%}
+        {%- set device_friendly_name -%}
+        {{ device_name(controller_id) }}
         {%- endset -%}
         {{ trigger.topic == 'zigbee2mqtt/outlet_buttons/' ~ device_friendly_name }}
       # check that the button event is not empty
