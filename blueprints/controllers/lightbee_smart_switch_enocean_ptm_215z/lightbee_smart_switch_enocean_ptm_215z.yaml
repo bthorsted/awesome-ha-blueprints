@@ -15,7 +15,7 @@ blueprint:
         select:
           options:
             - Zigbee2MQTT
-    controller_entity:
+    controller_device:
       name: HA device name, action entity
       description: The entity from HA
       selector:
