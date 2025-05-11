@@ -274,7 +274,7 @@ variables:
   # build data to send within a controller event
   controller_id: !input controller_device
   timediff: >-
-    {{ (trigger.payload_json.elapsed | int }}
+    {{ trigger.payload_json.elapsed | int }}
 triggers:
   # triggers for zigbee2mqtt mqtt device action
   - trigger: mqtt
