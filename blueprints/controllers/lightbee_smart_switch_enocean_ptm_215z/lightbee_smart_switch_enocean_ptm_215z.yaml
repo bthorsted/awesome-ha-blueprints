@@ -275,11 +275,13 @@ variables:
   controller_id: !input controller_device
   timediff: >-
     {{ trigger.payload_json.elapsed | int }}
+trigger_variables:
+  controller_topic: "{{ 'zigbee2mqtt/' ~ device_name(controller_id) }}"
 triggers:
   # triggers for zigbee2mqtt mqtt device action
   - trigger: mqtt
     id: z2m.action
-    topic: "{{ 'zigbee2mqtt/' ~ device_name(controller_id) }}"
+    topic: "{{ controller_topic }}"
 conditions:
   - condition: and
     conditions:
