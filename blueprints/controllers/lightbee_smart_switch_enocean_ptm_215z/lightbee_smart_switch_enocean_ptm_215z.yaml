@@ -19,10 +19,10 @@ blueprint:
       name: HA device name, action entity
       description: The entity from HA
       selector:
-        entity:
+        device:
           filter: 
             - integration: mqtt
-              domain: event
+              manufacturer: EnOcean
           multiple: false 
     helper_last_controller_event:
       name: (Required) Helper - Last Controller Event
@@ -272,28 +272,14 @@ variables:
   # integrations which need to store the previous press event to determine which button was released
   integrations_with_prev_event_storage: [zigbee2mqtt]
   # build data to send within a controller event
-  controller_id: !input controller_entity
+  controller_id: !input controller_device
   timediff: >-
     {{ (trigger.to_state.last_changed -
     trigger.from_state.last_changed).total_seconds() }}
 triggers:
   # triggers for zigbee2mqtt mqtt device action
-  - trigger: state
-    entity_id: !input controller_entity
-    attribute: event_type
-    to:
-      - release_1
-      - release_2
-      - release_3
-      - release_4
-      - release_1_and_3
-      - release_2_and_4
-      - press_1
-      - press_2
-      - press_3
-      - press_4
-      - press_1_and_3
-      - press_2_and_4
+  - trigger: mqtt
+    topic: 'zigbee2mqtt/{{ controller_id }}'
 conditions:
   - condition: and
     conditions:
@@ -316,7 +302,7 @@ action:
   - variables:
       trigger_action: >-
         {%- if integration_id == "z2m" -%}
-        {{ trigger.to_state.attributes.event_type }}
+        {{ trigger.payload['action'] }}
         {%- endif -%}
       deserialized_state: '{{ (states(helper_last_controller_event) | from_json) if helper_last_controller_event is not none and (states(helper_last_controller_event) | regex_match("^\{\s*?((\"a\":\s*?\".*\"|\"t\":\s*?\d+\.\d+)(,\s*?)?){2}\s*?\}$")) else {} }}'
       trigger_delta: '{{ (as_timestamp(now()) - (deserialized_state.t | default(0))) * 1000 }}'
