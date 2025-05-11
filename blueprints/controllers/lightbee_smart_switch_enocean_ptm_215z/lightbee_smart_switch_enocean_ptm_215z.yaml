@@ -279,7 +279,7 @@ triggers:
   # triggers for zigbee2mqtt mqtt device action
   - trigger: mqtt
     id: z2m.action
-    topic: 'zigbee2mqtt/{{ device_name(controller_id) }}'
+    topic: "{{ 'zigbee2mqtt/' ~ device_name(controller_id) }}"
 conditions:
   - condition: and
     conditions:
