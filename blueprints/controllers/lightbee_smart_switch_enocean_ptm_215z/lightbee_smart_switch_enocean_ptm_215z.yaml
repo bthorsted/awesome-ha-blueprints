@@ -274,11 +274,11 @@ variables:
   # build data to send within a controller event
   controller_id: !input controller_device
   timediff: >-
-    {{ (trigger.to_state.last_changed -
-    trigger.from_state.last_changed).total_seconds() }}
+    {{ (trigger.payload_json.elapsed | int }}
 triggers:
   # triggers for zigbee2mqtt mqtt device action
   - trigger: mqtt
+    id: z2m.action
     topic: 'zigbee2mqtt/{{ controller_id }}'
 conditions:
   - condition: and
@@ -287,7 +287,7 @@ conditions:
       - >-
         {%- set trigger_action -%}
         {%- if integration_id == "z2m" -%}
-        {{ trigger.to_state.attributes.event_type }}
+        {{ trigger.payload_json.action }}
         {%- endif -%}
         {%- endset -%}
         {{ trigger_action not in ["","None"] }}
@@ -302,7 +302,7 @@ action:
   - variables:
       trigger_action: >-
         {%- if integration_id == "z2m" -%}
-        {{ trigger.payload['action'] }}
+        {{ trigger.payload_json.action }}
         {%- endif -%}
       deserialized_state: '{{ (states(helper_last_controller_event) | from_json) if helper_last_controller_event is not none and (states(helper_last_controller_event) | regex_match("^\{\s*?((\"a\":\s*?\".*\"|\"t\":\s*?\d+\.\d+)(,\s*?)?){2}\s*?\}$")) else {} }}'
       trigger_delta: '{{ (as_timestamp(now()) - (deserialized_state.t | default(0))) * 1000 }}'
