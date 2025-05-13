@@ -276,7 +276,7 @@ trigger_variables:
 triggers:
   # triggers for zigbee2mqtt mqtt device action
   - trigger: mqtt
-    id: z2m.action
+    id: z2m-action
     topic: "{{ mqtt_topic }}"
 conditions:
   - and:
