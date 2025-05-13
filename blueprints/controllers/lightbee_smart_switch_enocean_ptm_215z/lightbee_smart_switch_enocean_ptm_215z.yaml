@@ -8,22 +8,18 @@ blueprint:
     Works with Zigbee2MQTT 2.0 and up
   domain: automation
   input:
-    integration:
-      name: (Required) Integration
-      description: Integration used for connecting the remote with Home Assistant. Select one of the available values.
-      selector:
-        select:
-          options:
-            - Zigbee2MQTT
-    controller_device:
-      name: HA device name, action entity
-      description: The entity from HA
-      selector:
-        device:
-          filter: 
-            - integration: mqtt
-              manufacturer: EnOcean
-          multiple: false 
+    # integration:
+    #   name: (Required) Integration
+    #   description: Integration used for connecting the remote with Home Assistant. Select one of the available values.
+    #   selector:
+    #     select:
+    #       options:
+    #         - Zigbee2MQTT
+    mqtt_topic:
+      name: MQTT topic to listen for
+      description: "Example: zigbee2mqtt/<friendly name>"
+      text:
+        type: text
     helper_last_controller_event:
       name: (Required) Helper - Last Controller Event
       description: Input Text used to store the last event fired by the controller. You will need to manually create a text input entity for this, please read the blueprint Additional Notes for more info.
@@ -275,19 +271,14 @@ variables:
   timediff: >-
     {{ trigger.payload_json.elapsed | int }}
 trigger_variables:
-  controller_id: !input controller_device
+  mqtt_topic: !input mqtt_topic
 triggers:
   # triggers for zigbee2mqtt mqtt device action
   - trigger: mqtt
     id: z2m.action
-    topic: "zigbee2mqtt/outlet_buttons/+"
+    topic: "{{ mqtt_topic }}"
 conditions:
   - and:
-      - >-
-        {%- set device_friendly_name -%}
-        {{ device_name(controller_id) }}
-        {%- endset -%}
-        {{ trigger.topic == 'zigbee2mqtt/outlet_buttons/' ~ device_friendly_name }}
       # check that the button event is not empty
       - >-
         {%- set trigger_action -%}
