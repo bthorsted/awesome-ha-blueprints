@@ -220,6 +220,7 @@ variables:
   button_4_long_loop: !input button_4_long_loop
   button_4_long_max_loop_repeats: !input button_4_long_max_loop_repeats
   helper_debounce_delay: !input helper_debounce_delay
+  helper_last_controller_event: !input helper_last_controller_event
   # mapping between actions and integrations
   actions_mapping:
     z2m:
