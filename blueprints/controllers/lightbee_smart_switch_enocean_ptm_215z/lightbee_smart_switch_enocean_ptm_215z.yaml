@@ -21,6 +21,14 @@ blueprint:
       selector:
         text:
           type: text
+    controller_device:
+      name: Controller device
+      description: The controller device publishing on the above MQTT topic
+      selector:
+        device:
+          filter:
+            - integration: mqtt
+              manufacturer: EnOcean
     hold_delay:
       name: Hold delay
       description: If the button has been held more than the configured Hold delay,
@@ -202,6 +210,7 @@ variables:
   # integration id used to select items in the action mapping
   # integration type is set from trigger.id
   integration_id: '{{ trigger.id.split("-")[0] }}'
+  controller_id: !input controller_device
   # convert input tags to variables, to be used in templates
   hold_delay: !input hold_delay
   button_1_long_loop: !input button_1_long_loop
