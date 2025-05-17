@@ -416,7 +416,7 @@ action:
     - conditions: '{{ trigger_action | string in button_1_release }}'
       sequence:
       - choose:
-        - conditions: '{{ timediff > (hold_delay/1000) }}'
+        - conditions: '{{ timediff > hold_delay }}'
           sequence:
             - event: ahb_controller_event
               event_data:
@@ -435,7 +435,7 @@ action:
     - conditions: '{{ trigger_action | string in button_2_release }}'
       sequence:
       - choose:
-        - conditions: '{{ timediff > (hold_delay/1000) }}'
+        - conditions: '{{ timediff > hold_delay }}'
           sequence:
             - event: ahb_controller_event
               event_data:
@@ -454,7 +454,7 @@ action:
     - conditions: '{{ trigger_action | string in button_3_release }}'
       sequence:
       - choose:
-        - conditions: '{{ timediff > (hold_delay/1000) }}'
+        - conditions: '{{ timediff > hold_delay }}'
           sequence:
             - event: ahb_controller_event
               event_data:
@@ -473,7 +473,7 @@ action:
     - conditions: '{{ trigger_action | string in button_4_release }}'
       sequence:
       - choose:
-        - conditions: '{{ timediff > (hold_delay/1000) }}'
+        - conditions: '{{ timediff > hold_delay }}'
           sequence:
             - event: ahb_controller_event
               event_data:
@@ -493,7 +493,7 @@ action:
     - conditions: '{{ trigger_action | string in ''release_1_and_3'' }}'
       sequence:
       - choose:
-        - conditions: '{{ timediff > (hold_delay/1000) }}'
+        - conditions: '{{ timediff > hold_delay }}'
           sequence:
             - event: ahb_controller_event
               event_data:
@@ -512,7 +512,7 @@ action:
     - conditions: '{{ trigger_action | string in ''release_2_and_4'' }}'
       sequence:
       - choose:
-        - conditions: '{{ timediff > (hold_delay/1000) }}'
+        - conditions: '{{ timediff > hold_delay }}'
           sequence:
             - event: ahb_controller_event
               event_data:
