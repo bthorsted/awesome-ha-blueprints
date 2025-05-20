@@ -230,44 +230,48 @@ variables:
       button_1_long: [button_1_hold]
       button_1_release: [release_1]
       button_1_double: [button_1_double]
-      button_1_triple: [press_1_and_3]
+      buttons_1_and_3_short: [press_1_and_3]
+      buttons_1_and_3_long: [buttons_1_and_3_hold]
+      buttons_1_and_3_release: [release_1_and_3]
       button_2_short: [press_2]
       button_2_long: [button_2_hold]
       button_2_release: [release_2]
       button_2_double: [button_2_double]
-      button_2_triple: [press_2_and_4]
+      buttons_2_and_4_short: [press_2_and_4]
+      buttons_2_and_4_long: [buttons_2_and_4_hold]
+      buttons_2_and_4_release: [release_2_and_4]
       button_3_short: [press_3]
       button_3_long: [button_3_hold]
       button_3_release: [release_3]
       button_3_double: [button_3_double]
-      button_3_triple: [button_3_triple]
       button_4_short: [press_4]
       button_4_long: [button_4_hold]
       button_4_release: [release_4]
       button_4_double: [button_4_double]
-      button_4_triple: [button_4_triple]
   # pre-choose actions for buttons based on configured integration
   # no need to perform this task at automation runtime
   button_1_short: '{{ actions_mapping[integration_id]["button_1_short"] }}'
   button_1_long: '{{ actions_mapping[integration_id]["button_1_long"] }}'
   button_1_release: '{{ actions_mapping[integration_id]["button_1_release"] }}'
   button_1_double: '{{ actions_mapping[integration_id]["button_1_double"] }}'
-  button_1_triple: '{{ actions_mapping[integration_id]["button_1_triple"] }}'
+  buttons_1_and_3_short: '{{ actions_mapping[integration_id]["buttons_1_and_3_short"] }}'
+  buttons_1_and_3_long: '{{ actions_mapping[integration_id]["buttons_1_and_3_long"] }}'
+  buttons_1_and_3_release: '{{ actions_mapping[integration_id]["buttons_1_and_3_release"] }}'
   button_2_short: '{{ actions_mapping[integration_id]["button_2_short"] }}'
   button_2_long: '{{ actions_mapping[integration_id]["button_2_long"] }}'
   button_2_release: '{{ actions_mapping[integration_id]["button_2_release"] }}'
   button_2_double: '{{ actions_mapping[integration_id]["button_2_double"] }}'
-  button_2_triple: '{{ actions_mapping[integration_id]["button_2_triple"] }}'
+  buttons_2_and_4_short: '{{ actions_mapping[integration_id]["buttons_2_and_4_short"] }}'
+  buttons_2_and_4_long: '{{ actions_mapping[integration_id]["buttons_2_and_4_long"] }}'
+  buttons_2_and_4_release: '{{ actions_mapping[integration_id]["buttons_2_and_4_release"] }}'
   button_3_short: '{{ actions_mapping[integration_id]["button_3_short"] }}'
   button_3_long: '{{ actions_mapping[integration_id]["button_3_long"] }}'
   button_3_release: '{{ actions_mapping[integration_id]["button_3_release"] }}'
   button_3_double: '{{ actions_mapping[integration_id]["button_3_double"] }}'
-  button_3_triple: '{{ actions_mapping[integration_id]["button_3_triple"] }}'
   button_4_short: '{{ actions_mapping[integration_id]["button_4_short"] }}'
   button_4_long: '{{ actions_mapping[integration_id]["button_4_long"] }}'
   button_4_release: '{{ actions_mapping[integration_id]["button_4_release"] }}'
   button_4_double: '{{ actions_mapping[integration_id]["button_4_double"] }}'
-  button_4_triple: '{{ actions_mapping[integration_id]["button_4_triple"] }}'
   # integrations which need to store the previous press event to determine which button was released
   integrations_with_prev_event_storage: [zigbee2mqtt]
   # build data to send within a controller event
@@ -385,7 +389,7 @@ action:
         # if looping is not enabled run the custom action only once
         default: !input action_button_4_long
 
-    - conditions: '{{ trigger_action | string in button_1_and_3_short }}'
+    - conditions: '{{ trigger_action | string in buttons_1_and_3_short }}'
       sequence: 
       - delay:
           milliseconds: '{{ hold_delay }}'
@@ -393,13 +397,13 @@ action:
       - event: ahb_controller_event
         event_data:
           controller: '{{ controller_id }}'
-          action: button_1_triple
+          action: buttons_1_and_3_long
       # run the custom action
       - choose:
           - conditions: []
             sequence: !input action_button_13_long
 
-    - conditions: '{{ trigger_action | string in button_2_and_4_short }}'
+    - conditions: '{{ trigger_action | string in buttons_2_and_4_short }}'
       sequence: 
       - delay:
           milliseconds: '{{ hold_delay }}'
@@ -407,7 +411,7 @@ action:
       - event: ahb_controller_event
         event_data:
           controller: '{{ controller_id }}'
-          action: button_2_triple
+          action: buttons_2_and_4_long
       # run the custom action
       - choose:
           - conditions: []
@@ -490,7 +494,7 @@ action:
               sequence: !input action_button_4_short
 
 
-    - conditions: '{{ trigger_action | string in ''release_1_and_3'' }}'
+    - conditions: '{{ trigger_action | string in buttons_1_and_3_release }}'
       sequence:
       - choose:
         - conditions: '{{ timediff > hold_delay }}'
@@ -498,18 +502,18 @@ action:
             - event: ahb_controller_event
               event_data:
                 controller: '{{ controller_id }}'
-                action: button_13_release
+                action: buttons_1_and_3_release
         default:
           sequence:
           - event: ahb_controller_event
             event_data:
               controller: '{{ controller_id }}'
-              action: button_1_triple
+              action: buttons_1_and_3_short
           - choose:
             - conditions: '{{ true }}'
               sequence: !input action_button_13_short
 
-    - conditions: '{{ trigger_action | string in ''release_2_and_4'' }}'
+    - conditions: '{{ trigger_action | string in buttons_2_and_4_release }}'
       sequence:
       - choose:
         - conditions: '{{ timediff > hold_delay }}'
@@ -517,13 +521,13 @@ action:
             - event: ahb_controller_event
               event_data:
                 controller: '{{ controller_id }}'
-                action: button_24_release
+                action: buttons_2_and_4_release
         default:
           sequence:
           - event: ahb_controller_event
             event_data:
               controller: '{{ controller_id }}'
-              action: button_2_triple
+              action: buttons_2_and_4_short
           - choose:
             - conditions: '{{ true }}'
               sequence: !input action_button_24_short
